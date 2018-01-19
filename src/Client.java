@@ -10,6 +10,7 @@ public class Client {
 
 	private DatagramSocket sendReceiveSocket;
 	private DatagramPacket sendPacket, receivePacket;
+	private int port = 23;
 	
 	
 	// Construct a Client which initially creates the send and receive DatagramSocket.
@@ -27,7 +28,7 @@ public class Client {
 	}
 	
 	// Method gets a read request format as specified: 01name0netascii0
-	public void sendAndReceive(String filename, String mode, byte readWrite, int port) {
+	public void sendAndReceive(String filename, String mode, byte readWrite) {
 		byte[] filenameByte = filename.getBytes();
 		byte[] modeByte = mode.getBytes();
 		byte[] result = new byte[filenameByte.length + modeByte.length + 4]; // This will give the total byte array space needed for the datagram
@@ -38,7 +39,7 @@ public class Client {
 		System.arraycopy(modeByte, 0, result, filenameByte.length + 3, modeByte.length);
 		result[filenameByte.length + modeByte.length + 3] = 0;
 		
-		
+		// Creating Packet for read/write.
 		try {
 			sendPacket = new DatagramPacket(result, result.length, InetAddress.getLocalHost(), port);
 		}
@@ -52,41 +53,65 @@ public class Client {
 	    System.out.println("Destination host port: " + sendPacket.getPort());
 	    System.out.print("Containing: ");
 	    System.out.println(new String(sendPacket.getData())); // alt; System.out.println(bytetoString(result));
-	    System.out.println(result);
+	    System.out.println(sendPacket.getData());
 	    
 	    // Send PacketDatagram to server via send/receive socket.
 	    try {
-	         sendReceiveSocket.send(sendPacket);
-	      } catch (IOException e) {
-	         e.printStackTrace();
-	         System.exit(1);
-	      }
-
+	    	if(readWrite == 1) {
+	    		System.out.println("***Read Request Sending*** \n");
+	    	}
+	    	if(readWrite == 2) {
+	    		System.out.println("***Write Request Sending*** \n");
+	    	}
+	    	sendReceiveSocket.send(sendPacket);
+	    }
+	    catch (IOException e) {
+	    	e.printStackTrace();
+	        System.exit(1);
+	    }
 	    System.out.println("Client: Packet sent.\n");
 	    
+	    // Receiving Packet
 	    byte data[] = new byte[filenameByte.length + modeByte.length + 4];
 	    receivePacket = new DatagramPacket(data, data.length);
+	    
+	    try {
+	         // Block until a datagram is received via sendReceiveSocket.  
+	    	sendReceiveSocket.receive(receivePacket);
+	    }
+	    catch(IOException e) {
+	    	e.printStackTrace();
+	        System.exit(1);
+	    }
+
+	    // Process the received datagram.
+	    System.out.println("Client: Packet received:");
+	    System.out.println("From host: " + receivePacket.getAddress());
+	    System.out.println("Host port: " + receivePacket.getPort());
+	    System.out.print("Containing: ");
+
+	    // Form a String from the byte array.  
+	    System.out.println(new String(receivePacket.getData()));
+	    sendReceiveSocket.close();
+	    
 	}
 
 	//  Method repeats the send/receive procedure 11 times as specified.
-	public void repeatPrint(String filename, String mode, int port) {
-		byte readWrite = 1;
-		for(int n = 0; n < 1; n++) {
-			sendAndReceive(filename, mode, readWrite, port);
+	public void startPrint(String filename, String mode) {
+		byte readRequest = 1;
+		byte writeRequest = 2;
+		byte invalidRequest = 3;
+		for(int n = 0; n < 5; n++) {
+			sendAndReceive(filename, mode, readRequest);
+			sendAndReceive(filename, mode, writeRequest);
 
 		}
+		sendAndReceive(filename, mode, invalidRequest);
 		System.out.println("Invalid Request");
+		
+	    // Closing up the socket
+	    sendReceiveSocket.close();
 	}
-	
-	// Changing byte format to String
-//	public String bytetoString(byte[] result) {
-//		String resultInString = "";
-//		
-//		for(int i = 0; i < result.length; i++) {
-//			resultInString += (char)result[i];
-//		}
-//		return resultInString;
-//	}
 	
 	public static void main(String args[]) {
 		Client client1 = new Client();
@@ -96,9 +121,7 @@ public class Client {
 		String filename = sc.next();
 		System.out.print("Enter the mode (eg. 'netascii' or 'octet': ");
 		String mode = sc.next();
-		System.out.print("Enter the port address: ");
-		int port = sc.nextInt();
-		client1.repeatPrint(filename, mode, port);
+		client1.startPrint(filename, mode);
 		sc.close();
 	}
 }
