@@ -1,3 +1,6 @@
+// @author Andrew Nguyen
+// @ 100893165
+
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.DatagramPacket;

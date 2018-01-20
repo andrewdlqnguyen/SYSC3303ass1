@@ -1,3 +1,7 @@
+// @author Andrew Nguyen
+// @ 100893165
+// UDP Datagram network. Client works with Host and Server
+
 import java.net.DatagramSocket; // Sending and Receiving UDP datagrams
 import java.io.IOException;
 import java.net.DatagramPacket; // User Datagram Protocol datagram
