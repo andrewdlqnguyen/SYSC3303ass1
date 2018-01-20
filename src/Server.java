@@ -28,6 +28,8 @@ public class Server {
 		catch(SocketException se) {
 			se.printStackTrace();
 			currentStatus = false; // Exit out of loop and close all socket.
+			receiveSocket.close();
+			sendSocket.close();
 			System.exit(1);
 		}
 	
@@ -48,7 +50,8 @@ public class Server {
 	        System.out.println("Receive Socket Timed Out.\n" + e);
 			e.printStackTrace();
 			currentStatus = false;
-			// receiveSocket.close();
+			receiveSocket.close();
+			sendSocket.close();
 			System.exit(1);
 		}
 		
@@ -69,6 +72,8 @@ public class Server {
 	    catch (InterruptedException e ) {
 	        e.printStackTrace();
 	        currentStatus = false;
+	        receiveSocket.close();
+			sendSocket.close();
 	        System.exit(1);
 	    }
 	    
@@ -92,6 +97,8 @@ public class Server {
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    	currentStatus = false;
+	    	receiveSocket.close();
+			sendSocket.close();
 	    	System.exit(1);
 	    }
 	}
@@ -115,6 +122,7 @@ public class Server {
 		else {
 			System.out.println("***Packet Parsing***");
 		    System.out.println("'Invalid Request'");
+		    currentStatus = false;
 			return invalid;
 		}
 	}
@@ -129,6 +137,7 @@ public class Server {
 		// Closing up sockets
 	    sendSocket.close();
 	    receiveSocket.close();
+	    System.exit(1);
 	}
 	
 	public static void main(String args[]) {

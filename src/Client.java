@@ -28,6 +28,7 @@ public class Client {
 		}
 		catch(SocketException se) { // Exit, no socket created.
 			se.printStackTrace();
+			sendReceiveSocket.close();
 			System.exit(1);
 		}
 		
@@ -53,6 +54,7 @@ public class Client {
 		}
 		catch(UnknownHostException e) {
 			e.printStackTrace();
+			sendReceiveSocket.close();
 			System.exit(1);
 		}
 		
@@ -76,6 +78,7 @@ public class Client {
 	    }
 	    catch (IOException e) {
 	    	e.printStackTrace();
+	    	sendReceiveSocket.close();
 	        System.exit(1);
 	    }
 	    System.out.println("Client: Packet sent.");
@@ -93,6 +96,7 @@ public class Client {
 	    }
 	    catch(IOException e) {
 	    	e.printStackTrace();
+	    	sendReceiveSocket.close();
 	        System.exit(1);
 	    }
 
@@ -125,6 +129,7 @@ public class Client {
 		
 	    // Closing up the socket
 	    sendReceiveSocket.close();
+	    System.exit(1);
 	}
 	
 	public static void main(String args[]) {

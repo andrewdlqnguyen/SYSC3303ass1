@@ -45,9 +45,9 @@ public class IntermediateHost {
 			System.out.println("IO Exception: likely:");
 			System.out.println("Receive Socket Timed Out.\n" + e);
 			e.printStackTrace();
-//			receiveSocket.close();
-//			sendReceiveSocket.close();
 			currentStatus = false;
+			receiveSocket.close();
+			sendReceiveSocket.close();
 			System.exit(1);
 		}
 	    
@@ -69,6 +69,8 @@ public class IntermediateHost {
 	    catch (InterruptedException e ) {
 	        e.printStackTrace();
 	        currentStatus = false;
+	        receiveSocket.close();
+			sendReceiveSocket.close();
 	        System.exit(1);
 	    }
 	    
@@ -83,13 +85,15 @@ public class IntermediateHost {
 		catch (UnknownHostException e) {
 			e.printStackTrace();
 			currentStatus = false;
+			receiveSocket.close();
+			sendReceiveSocket.close();
+			System.exit(1);;
 		}
-		catch (IOException e) 
-		{
+		catch (IOException e) {
 			e.printStackTrace();
 			currentStatus = false;
-//			receiveSocket.close();
-//			sendReceiveSocket.close();
+			receiveSocket.close();
+			sendReceiveSocket.close();
 			System.exit(1);
 		}
 		
@@ -113,6 +117,8 @@ public class IntermediateHost {
 	    }
 	    catch(IOException e) {
 	    	e.printStackTrace();
+	    	receiveSocket.close();
+			sendReceiveSocket.close();
 	        System.exit(1);
 	    }
 	    // Process the received datagram.
@@ -143,6 +149,8 @@ public class IntermediateHost {
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    	currentStatus = false;
+	    	receiveSocket.close();
+			sendReceiveSocket.close();
 	    	System.exit(1);
 	    }
 	}
